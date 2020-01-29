@@ -18,7 +18,16 @@ app.get('/api/v1/teams', async (request, response) => {
     } catch(error) {
       response.status(500).json({ error });
     }
-  });
+});
+  
+app.get('/api/v1/players', async (request, response) => {
+  try {
+    const players = await database('players').select();
+    response.status(200).json(players);
+  } catch(error) {
+    response.status(500).json({ error });
+  }
+});
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
