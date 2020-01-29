@@ -11,7 +11,7 @@ exports.up = function (knex) {
         
         knex.schema.createTable('players', (table) => {
             table.increments('id').primary();
-            table.string('team');
+            table.string('name');
             table.integer('team_id').unsigned()
             table.foreign('team_id')
               .references('teams.id');
