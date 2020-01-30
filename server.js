@@ -63,9 +63,7 @@ app.get('/api/v1/players/:id', async (request, response) => {
 })
 
 app.post('/api/v1/teams', (request, response) => {
-  console.log(request)
   const teamClass = request.body;
-  console.log(teamClass)
   const { team, conference } = teamClass;
 
 
@@ -75,16 +73,27 @@ app.post('/api/v1/teams', (request, response) => {
       }
     }
 
-  database('teams').insert(teamClass, 'team')    
-    .then(squad => {
-      response.status(201).json({
-        team: squad[0],
-        conference: squad[0]
-      })
-    })
-    .catch(error => {
+  database('teams').insert(teamClass, 'team', 'conference')  
+      .then(response.status(201).json(teamClass))
+      .catch(error => {
       response.status(500).json({error})
     })
+})
+
+app.post('/api/v1/players', (request, response) => {
+  const bestPlayer = request.body;
+
+  for (let requiredParameter of ['name', 'team_id']) {
+    if (!bestPlayer[requiredParameter]) {
+      return response.status(422).send({error: 'Not right'})
+    }
+  }
+
+  database('players').insert(bestPlayer, 'name')  
+    .then(response.status(201).json(bestPlayer))
+    .catch(error => {
+    response.status(500).json({error})
+  })
 })
 
 
