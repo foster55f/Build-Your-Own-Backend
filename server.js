@@ -29,6 +29,19 @@ app.get('/api/v1/players', async (request, response) => {
   }
 });
 
+app.get('/api/v1/teams/:id', async (request, response) => {
+  const { id } = request.params;
+  database('teams')
+    .where({ id: id })
+    .then(team => {
+      if (!team[0]){
+        response.status(404).json({error:`no team found with ${id} found`})
+      } else {
+        response.status(200).json(team[0])
+      }
+  })
+})
+
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
 });
