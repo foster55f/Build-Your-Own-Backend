@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(express.json())
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
@@ -60,6 +61,32 @@ app.get('/api/v1/players/:id', async (request, response) => {
     response.status(500).json({error})
   })
 })
+
+app.post('/api/v1/teams', (request, response) => {
+  console.log(request)
+  const teamClass = request.body;
+  console.log(teamClass)
+  const { team, conference } = teamClass;
+
+
+    for (let requiredParameter of ['team', 'conference']) {
+      if (!teamClass[requiredParameter]) {
+        return response.status(422).send({error: 'Not right'})
+      }
+    }
+
+  database('teams').insert(teamClass, 'team')    
+    .then(squad => {
+      response.status(201).json({
+        team: squad[0],
+        conference: squad[0]
+      })
+    })
+    .catch(error => {
+      response.status(500).json({error})
+    })
+})
+
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
