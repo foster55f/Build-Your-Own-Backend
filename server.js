@@ -96,6 +96,20 @@ app.post('/api/v1/players', (request, response) => {
   })
 })
 
+app.delete('/api/v1/players/:name', (request, response) => {
+  const { name } = request.params;
+  database('players').where({ name: name })  
+    .del()
+    .then(responseAnswer => {
+      if (!responseAnswer) {
+        return response.status(404).json(`Player ${name} not found`)
+      }
+      return response.status(200).json(`${name} deleted`)
+  })
+
+})
+
+
 
 app.listen(app.get('port'), () => {
   console.log(`${app.locals.title} is running on http://localhost:${app.get('port')}.`);
